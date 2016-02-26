@@ -28,9 +28,3 @@ extension NSObjectProtocol where Self: StringRepresentable {
     /// Automatically implement description for objects that can be represented as strings.
     var description: String { return longString }
 }
-
-extension StringRepresentable where Self: User {
-    var shortString: String { return name }
-    var mediumString: String { return name + " (" + email + ") - " + company.catchPhrase }
-    var longString: String { return name + " (" + email + ") - " + company.catchPhrase }
-}

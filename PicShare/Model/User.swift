@@ -96,11 +96,11 @@ struct User {
         //	MARK: Properties
         
         /// The very 'dynamic' name of this 'ground-breaking' company.
-        let name: String?
+        let name: String
         /// The amazing catch phrase that represents how this company is making waves in the industry.
-        let catchPhrase: String?
+        let catchPhrase: String
         /// Gotta have it.
-        let bull: String?
+        let bull: String
         
         //	MARK: Initialisation
         
@@ -115,9 +115,16 @@ struct User {
                 }
             }
             
-            name = JSON[CompanyJSONKey.Name.rawValue] as? String
-            catchPhrase = JSON[CompanyJSONKey.CatchPhrase.rawValue] as? String
-            bull = JSON[CompanyJSONKey.Bull.rawValue] as? String
+            guard let companyName = JSON[CompanyJSONKey.Name.rawValue] as? String,
+                companyCatchPhrase = JSON[CompanyJSONKey.CatchPhrase.rawValue] as? String,
+                companyBull = JSON[CompanyJSONKey.Bull.rawValue] as? String else {
+                    print("Invalid JSON representation of Company: \(JSON)")
+                    return nil
+            }
+            
+            name = companyName
+            catchPhrase = companyCatchPhrase
+            bull = companyBull
         }
     }
     
@@ -170,4 +177,10 @@ struct User {
             address = nil
         }
     }
+}
+
+extension User: StringRepresentable {
+    var shortString: String { return name }
+    var mediumString: String { return name + " (" + email + ") - " + company.catchPhrase }
+    var longString: String { return name + " (" + email + ") - " + company.catchPhrase }
 }
