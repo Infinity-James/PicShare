@@ -9,7 +9,6 @@
 import CoreLocation
 import Foundation
 
-
 //	MARK: User
 
 /**
@@ -125,7 +124,7 @@ struct User {
     //	MARK: Properties
     
     /// The unique identifier for the user.
-    let identifier: String
+    let identifier: Identifier
     /// Name of the user.
     let name: String?
     /// Username for the user.
@@ -149,7 +148,7 @@ struct User {
     Initialises a user with a given JSON representation.
     */
     init?(JSON: JSONValue) {
-        guard let id = JSON["id"] as? String else {
+        guard let id = JSON["id"] as? Identifier else {
             print("User requires an identifier.")
             return nil
         }

@@ -121,6 +121,9 @@ extension JSONResource {
     }
 }
 
+/// A string that uniquely identifies an object.
+typealias Identifier = String
+
 ////	MARK: Unique
 //
 ///**
