@@ -126,11 +126,11 @@ struct User {
     /// The unique identifier for the user.
     let identifier: Identifier
     /// Name of the user.
-    let name: String?
+    let name: String
     /// Username for the user.
-    let username: String?
+    let username: String
     /// Email address for the user.
-    let email: String?
+    let email: String
     /// The address of the user.
     let address: Address?
     /// The phone number for the user.
@@ -138,9 +138,7 @@ struct User {
     /// The website for the user.
     let website: String?
     /// The user's company.
-    let company: Company?
-    /// A cache for the data.
-    let dataCache: DataCache = [:]
+    let company: Company
     
     //	MARK: Initialisation
     
@@ -148,21 +146,24 @@ struct User {
     Initialises a user with a given JSON representation.
     */
     init?(JSON: JSONValue) {
-        guard let id = JSON["id"] as? Identifier else {
-            print("User requires an identifier.")
-            return nil
+        guard let id = JSON["id"] as? Identifier,
+            name = JSON["name"] as? String,
+            username = JSON["username"] as? String,
+            email = JSON["email"] as? String,
+            companyJSON = JSON["company"] as? JSONValue,
+            company = Company(JSON: companyJSON) else {
+                print("User requires an identifier, name, user name, email, and company.")
+                return nil
         }
+        
         identifier = id
-        name = JSON["name"] as? String
-        username = JSON["username"] as? String
-        email = JSON["email"] as? String
+        self.name = name
+        self.username = username
+        self.email = email
+        self.company = company
         phone = JSON["phone"] as? String
         website = JSON["website"] as? String
-        if let companyJSON = JSON["company"] as? JSONValue {
-            company = Company(JSON: companyJSON)
-        } else {
-            company = nil
-        }
+
         if let addressJSON = JSON["address"] as? JSONValue {
             address = Address(JSON: addressJSON)
         } else {

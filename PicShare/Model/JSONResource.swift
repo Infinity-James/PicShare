@@ -16,14 +16,10 @@ import Foundation
     A protocol that defines a remotely obtained resource.
  */
 protocol RemoteResource {
-    /// A naive method for caching data fetched by this resource. A real app would require a more robust solution.
-    var dataCache: DataCache { get set }
 }
 
-/// Defines an object which can be used to naively cache data.
-typealias DataCache = [String: NSData]
 /// A closure which will be called when a remote resource has loaded it's data.
-typealias RemoteResourceHandler = (success: Bool) -> ()
+typealias RemoteResourceHandler = (data: NSData?, success: Bool) -> ()
 /// A dictionary representing JSON.
 typealias JSONValue = [String: AnyObject]
 
@@ -45,28 +41,16 @@ extension RemoteResource {
                 if let error = error {
                     print("Error: \(error)")
                 }
-                completion?(success: false)
+                completion?(data: nil, success: false)
                 return
             }
             
             print("Response Code: \(HTTPResponse.statusCode)")
-            self.dataCache[URLPath] = data
             
-            completion?(success: true)
+            completion?(data: data, success: true)
         }
         
         task.resume()
-    }
-    
-    /**
-        Returns the data for a given URL.
-
-        - Parameter URL: The URL at which the desired data resides.
-     
-        - Returns:  The data for a given URL.
-     */
-    func dataForURL(URL: String) -> NSData? {
-        return dataCache[URL]
     }
 }
 
@@ -78,89 +62,39 @@ extension RemoteResource {
     A protocol which defines a JSON resource.
  */
 protocol JSONResource: RemoteResource {
+    /// The host of the server where the JSON resides.
     var JSONHost: String { get }
+    /// The path on the host for this JSON resource.
     var JSONPath: String { get }
     
-    func processJSON(success: Bool)
+    /**
+        Processes the JSON data in place.
+     
+        - Parameter data:   The JSON data to be processed.
+     
+        - Returns:  Whether or not the JSON was processed successfully.
+     */
+    mutating func processJSON(data: NSData) -> Bool
 }
 
 extension JSONResource {
     /// Default the host name to this app's main API.
-    var JSONHost: String { return "" }
+    var JSONHost: String { return "jsonplaceholder.typicode.com/" }
     /// Use the host and the path to generate a fully qualified URL.
     var JSONURL: String { return "http://" + JSONHost + JSONPath }
     
     /**
         The main function responsible for the loading of the JSON.
-     
-        - Parameter completion:  A handler called upon completion of the load, successful or otherwise.
      */
-    mutating func loadJSON(completion: RemoteResourceHandler?) {
-        load(JSONURL) { success in
+    mutating func loadJSON() {
+        load(JSONURL) { data, success in
             //  processing the result is down to the adopter of this protocol
-            self.processJSON(success)
-            
-            //  call completion on main queue
-            NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: success) }
-        }
-    }
-}
-
-extension JSONResource {
-    /// This JSON resource as a JSON value. (JSON is lowercase here to avoid problems with it being mistaken for the type `JSONValue`)
-    var jsonValue: JSONValue? {
-        do {
-            if let data = dataForURL(JSONURL), result = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? JSONValue {
-                return result
+            if let data = data where success {
+                self.processJSON(data)
             }
-        } catch {
-            print("Error attempting to serialise JSON: \(error)")
         }
-        
-        return nil
     }
 }
 
 /// A string that uniquely identifies an object.
 typealias Identifier = Int
-
-////	MARK: Unique
-//
-///**
-//    Defines a protocol for any entity which has a unique identifier.
-// */
-//protocol Unique {
-//    var identifier: String { get }
-//}
-//
-//extension Unique where Self: NSObject {
-//    /**
-//        A default initialiser for any unique object.
-//    
-//        - Parameter id  A unique identifier for this object. Defaults to random unique string.
-//    
-//        - Returns: An instance os this Unique object.
-//     */
-//    init(id: String = NSUUID().UUIDString) {
-//        self.init()
-//        
-//        identifier = id
-//    }
-//}
-//
-///**
-//    Compares 2 unique objects by checking the identifiers.
-// */
-//func ==(left: Unique, right: Unique) -> Bool {
-//    return left.identifier == right.identifier
-//}
-//
-//extension NSObjectProtocol where Self: Unique {
-//    func isEqual(object: AnyObject?) -> Bool {
-//        if let object = object as? Unique {
-//            return object.identifier == identifier
-//        }
-//        
-//        return false
-//    }
-//}
