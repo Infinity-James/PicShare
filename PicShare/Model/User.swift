@@ -17,13 +17,13 @@ import Foundation
 
     Object that represents a user.
  */
-class User {
+struct User {
     
     //	MARK: Address
     
     struct Address {
         /**
-            Keys that can be used on an address to access pieces of address information.
+         Keys that can be used on an address to access pieces of address information.
          */
         private enum AddressJSONKey: String {
             /// A key to get the street of the address.
@@ -54,7 +54,7 @@ class User {
         //	MARK: Initialisation
         
         /**
-            Initialises an address with a given JSON representation.
+        Initialises an address with a given JSON representation.
         */
         init?(JSON: JSONValue) {
             for (key, _) in JSON {
@@ -63,11 +63,11 @@ class User {
                     return nil
                 }
             }
-
+            
             city = JSON[AddressJSONKey.City.rawValue] as? String
             
             if let coordinatesMap = JSON[AddressJSONKey.Coordinates.rawValue] as? JSONValue, latitude = coordinatesMap["latitude"] as? CLLocationDegrees, longitude = coordinatesMap["longitude"] as? CLLocationDegrees {
-                        coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             } else {
                 coordinates = nil
             }
@@ -83,7 +83,7 @@ class User {
         //	MARK: Company Keys
         
         /**
-            Keys that can be used on a company to get pieces of company information.
+        Keys that can be used on a company to get pieces of company information.
         */
         private enum CompanyJSONKey: String {
             /// The key to get the not boring name of the company.
@@ -93,7 +93,7 @@ class User {
             /// Arguably the most import part of the company.
             case Bull = "bs"
         }
-
+        
         //	MARK: Properties
         
         /// The very 'dynamic' name of this 'ground-breaking' company.
@@ -106,7 +106,7 @@ class User {
         //	MARK: Initialisation
         
         /**
-            Initialises a company with a given JSON representation.
+        Initialises a company with a given JSON representation.
         */
         init?(JSON: JSONValue) {
             for (key, _) in JSON {
@@ -146,10 +146,14 @@ class User {
     //	MARK: Initialisation
     
     /**
-        Initialises a user with a given JSON representation.
-     */
-    init(JSON: JSONValue) {
-        identifier = JSON["id"] as? String ?? ""
+    Initialises a user with a given JSON representation.
+    */
+    init?(JSON: JSONValue) {
+        guard let id = JSON["id"] as? String else {
+            print("User requires an identifier.")
+            return nil
+        }
+        identifier = id
         name = JSON["name"] as? String
         username = JSON["username"] as? String
         email = JSON["email"] as? String

@@ -11,6 +11,8 @@ import Foundation
 //	MARK: Remote Resource
 
 /**
+    `RemoteResource`
+
     A protocol that defines a remotely obtained resource.
  */
 protocol RemoteResource {
@@ -71,6 +73,8 @@ extension RemoteResource {
 //	MARK: JSON Resource
 
 /**
+    `JSONResource`
+
     A protocol which defines a JSON resource.
  */
 protocol JSONResource: RemoteResource {

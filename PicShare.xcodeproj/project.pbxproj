@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A03A4081C806CAF00C8B720 /* JSONResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03A4071C806CAF00C8B720 /* JSONResource.swift */; };
-		1A03A40A1C80710F00C8B720 /* PicShareObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03A4091C80710F00C8B720 /* PicShareObjects.swift */; };
+		1A03A40A1C80710F00C8B720 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03A4091C80710F00C8B720 /* User.swift */; };
 		1AFA728F1C7F35E900B9405F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA72831C7F35E800B9405F /* ViewController.swift */; };
 		1AFA72901C7F35E900B9405F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AFA72861C7F35E800B9405F /* Assets.xcassets */; };
 		1AFA72911C7F35E900B9405F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA72881C7F35E900B9405F /* AppDelegate.swift */; };
@@ -36,7 +36,7 @@
 
 /* Begin PBXFileReference section */
 		1A03A4071C806CAF00C8B720 /* JSONResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResource.swift; sourceTree = "<group>"; };
-		1A03A4091C80710F00C8B720 /* PicShareObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PicShareObjects.swift; sourceTree = "<group>"; };
+		1A03A4091C80710F00C8B720 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1AFA72501C7F317000B9405F /* PicShare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PicShare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AFA72641C7F317000B9405F /* PicShareTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicShareTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AFA726F1C7F317000B9405F /* PicShareUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicShareUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				1A03A4071C806CAF00C8B720 /* JSONResource.swift */,
-				1A03A4091C80710F00C8B720 /* PicShareObjects.swift */,
+				1A03A4091C80710F00C8B720 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -347,7 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AFA72911C7F35E900B9405F /* AppDelegate.swift in Sources */,
-				1A03A40A1C80710F00C8B720 /* PicShareObjects.swift in Sources */,
+				1A03A40A1C80710F00C8B720 /* User.swift in Sources */,
 				1AFA728F1C7F35E900B9405F /* ViewController.swift in Sources */,
 				1A03A4081C806CAF00C8B720 /* JSONResource.swift in Sources */,
 			);
