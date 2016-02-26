@@ -6,57 +6,164 @@
 //  Copyright © 2016 &Beyond. All rights reserved.
 //
 
+import CoreLocation
 import Foundation
 
-//	MARK: Address Keys
-
-/**
-    Keys that can be used on an address to access pieces of address information.
- */
-enum AddressKey: String {
-    /// The street of the address.
-    case Street = "street"
-    /// The suite number.
-    case Suite = "suite"
-    /// The city of the address.
-    case City = "city"
-    /// The xip code of the address.
-    case ZipCode = "zipcode"
-    /// Co-ordinates that locate the address.
-    case Coordinates = "geo"
-}
-/// A type that defines a dictionary describing an address.
-typealias Address = [AddressKey: String]
-
-//	MARK: Company Keys
-
-/**
-    Keys that can be used on a company to get pieces of company information.
- */
-enum CompanyKey: String {
-    /// The not boring name of the company.
-    case Name = "name"
-    /// The catchy one liner that sums a company up perfectly. Right?
-    case CatchPhrase = "catchphrase"
-    /// Arguably the most import part of the company.
-    case Bull = "bs"
-}
-/// A type that defines a dictionary describing a company.
-typealias Company = [CompanyKey: String]
 
 //	MARK: User
 
 /**
     `User`
- 
+
     Object that represents a user.
  */
-class User: NSObject {
-    let name: String
-    let username: String
-    let email: String
-    let address: Address
-    let phone: String
-    let website: String
-    let company: Company
+class User {
+    
+    //	MARK: Address
+    
+    struct Address {
+        /**
+            Keys that can be used on an address to access pieces of address information.
+         */
+        private enum AddressJSONKey: String {
+            /// A key to get the street of the address.
+            case Street = "street"
+            /// A key to get the suite number.
+            case Suite = "suite"
+            /// A key to get the city of the address.
+            case City = "city"
+            /// A key to get the zip code of the address.
+            case ZipCode = "zipcode"
+            /// A key to get the co-ordinates that locate the address.
+            case Coordinates = "geo"
+        }
+        
+        //	MARK: Properties
+        
+        /// The street of the address.
+        let street: String?
+        /// The suite number.
+        let suite: String?
+        /// The city of the address.
+        let city: String?
+        /// The zip code for the address.
+        let zipCode: String?
+        /// The co-ordinates that locate the address.
+        let coordinates: CLLocationCoordinate2D?
+        
+        //	MARK: Initialisation
+        
+        /**
+            Initialises an address with a given JSON representation.
+        */
+        init?(JSON: JSONValue) {
+            for (key, _) in JSON {
+                guard let _ = AddressJSONKey(rawValue: key) else {
+                    print("Invalid JSON representation of Address: \(JSON)")
+                    return nil
+                }
+            }
+
+            city = JSON[AddressJSONKey.City.rawValue] as? String
+            
+            if let coordinatesMap = JSON[AddressJSONKey.Coordinates.rawValue] as? JSONValue, latitude = coordinatesMap["latitude"] as? CLLocationDegrees, longitude = coordinatesMap["longitude"] as? CLLocationDegrees {
+                        coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            } else {
+                coordinates = nil
+            }
+            
+            street = JSON[AddressJSONKey.Street.rawValue] as? String
+            suite = JSON[AddressJSONKey.Suite.rawValue] as? String
+            zipCode = JSON[AddressJSONKey.ZipCode.rawValue] as? String
+        }
+    }
+    
+    //	MARK: Company
+    struct Company {
+        //	MARK: Company Keys
+        
+        /**
+            Keys that can be used on a company to get pieces of company information.
+        */
+        private enum CompanyJSONKey: String {
+            /// The key to get the not boring name of the company.
+            case Name = "name"
+            /// The key to get the catchy one liner that sums a company up perfectly. Right?
+            case CatchPhrase = "catchphrase"
+            /// Arguably the most import part of the company.
+            case Bull = "bs"
+        }
+
+        //	MARK: Properties
+        
+        /// The very 'dynamic' name of this 'ground-breaking' company.
+        let name: String?
+        /// The amazing catch phrase that represents how this company is making waves in the industry.
+        let catchPhrase: String?
+        /// Gotta have it.
+        let bull: String?
+        
+        //	MARK: Initialisation
+        
+        /**
+            Initialises a company with a given JSON representation.
+        */
+        init?(JSON: JSONValue) {
+            for (key, _) in JSON {
+                guard let _ = CompanyJSONKey(rawValue: key) else {
+                    print("Invalid JSON representation of Company: \(JSON)")
+                    return nil
+                }
+            }
+            
+            name = JSON[CompanyJSONKey.Name.rawValue] as? String
+            catchPhrase = JSON[CompanyJSONKey.CatchPhrase.rawValue] as? String
+            bull = JSON[CompanyJSONKey.Bull.rawValue] as? String
+        }
+    }
+    
+    //	MARK: Properties
+    
+    /// The unique identifier for the user.
+    let identifier: String
+    /// Name of the user.
+    let name: String?
+    /// Username for the user.
+    let username: String?
+    /// Email address for the user.
+    let email: String?
+    /// The address of the user.
+    let address: Address?
+    /// The phone number for the user.
+    let phone: String?
+    /// The website for the user.
+    let website: String?
+    /// The user's company.
+    let company: Company?
+    /// A cache for the data.
+    let dataCache: DataCache = [:]
+    
+    //	MARK: Initialisation
+    
+    /**
+        Initialises a user with a given JSON representation.
+     */
+    init(JSON: JSONValue) {
+        identifier = JSON["id"] as? String ?? ""
+        name = JSON["name"] as? String
+        username = JSON["username"] as? String
+        email = JSON["email"] as? String
+        phone = JSON["phone"] as? String
+        website = JSON["website"] as? String
+        if let companyJSON = JSON["company"] as? JSONValue {
+            company = Company(JSON: companyJSON)
+        } else {
+            company = nil
+        }
+        if let addressJSON = JSON["address"] as? JSONValue {
+            address = Address(JSON: addressJSON)
+        } else {
+            address = nil
+        }
+    }
 }

@@ -117,43 +117,43 @@ extension JSONResource {
     }
 }
 
-//	MARK: Unique
-
-/**
-    Defines a protocol for any entity which has a unique identifier.
- */
-protocol Unique {
-    var identifier: String { get set }
-}
-
-extension Unique where Self: NSObject {
-    /**
-        A default initialiser for any unique object.
-    
-        - Parameter id  A unique identifier for this object. Defaults to random unique string.
-    
-        - Returns: An instance os this Unique object.
-     */
-    init(id: String = NSUUID().UUIDString) {
-        self.init()
-        
-        identifier = id
-    }
-}
-
-/**
-    Compares 2 unique objects by checking the identifiers.
- */
-func ==(left: Unique, right: Unique) -> Bool {
-    return left.identifier == right.identifier
-}
-
-extension NSObjectProtocol where Self: Unique {
-    func isEqual(object: AnyObject?) -> Bool {
-        if let object = object as? Unique {
-            return object.identifier == identifier
-        }
-        
-        return false
-    }
-}
+////	MARK: Unique
+//
+///**
+//    Defines a protocol for any entity which has a unique identifier.
+// */
+//protocol Unique {
+//    var identifier: String { get }
+//}
+//
+//extension Unique where Self: NSObject {
+//    /**
+//        A default initialiser for any unique object.
+//    
+//        - Parameter id  A unique identifier for this object. Defaults to random unique string.
+//    
+//        - Returns: An instance os this Unique object.
+//     */
+//    init(id: String = NSUUID().UUIDString) {
+//        self.init()
+//        
+//        identifier = id
+//    }
+//}
+//
+///**
+//    Compares 2 unique objects by checking the identifiers.
+// */
+//func ==(left: Unique, right: Unique) -> Bool {
+//    return left.identifier == right.identifier
+//}
+//
+//extension NSObjectProtocol where Self: Unique {
+//    func isEqual(object: AnyObject?) -> Bool {
+//        if let object = object as? Unique {
+//            return object.identifier == identifier
+//        }
+//        
+//        return false
+//    }
+//}
