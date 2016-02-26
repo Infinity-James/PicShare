@@ -1,11 +1,5 @@
 # Created by https://www.gitignore.io/api/code,swift
 
-### Code ###
-# Visual Studio Code - https://code.visualstudio.com/
-.settings/
-.vscode/
-
-
 ### Swift ###
 # Xcode
 #
@@ -30,6 +24,7 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+.DS_Store
 
 ## Obj-C/Swift specific
 *.hmap
