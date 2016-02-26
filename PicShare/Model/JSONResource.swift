@@ -22,6 +22,8 @@ protocol RemoteResource {
 typealias DataCache = [String: NSData]
 /// A closure which will be called when a remote resource has loaded it's data.
 typealias RemoteResourceHandler = (success: Bool) -> ()
+/// A dictionary representing JSON.
+typealias JSONValue = [String: AnyObject]
 
 extension RemoteResource {
     /**
@@ -55,11 +57,11 @@ extension RemoteResource {
     }
     
     /**
-     *  Returns the data for a given URL.
-     *
-     *  :param: URL The URL at which the desired data resides.
-     *  
-     *  :returns:   The data for a given URL.
+        Returns the data for a given URL.
+
+        - Parameter URL: The URL at which the desired data resides.
+     
+        - Returns:  The data for a given URL.
      */
     func dataForURL(URL: String) -> NSData? {
         return dataCache[URL]
@@ -85,9 +87,73 @@ extension JSONResource {
     var JSONURL: String { return "http://" + JSONHost + JSONPath }
     
     /**
-     *  The main function responsible for the loading of the JSON.
-     *
-     *  :param: completion  A handler called upon completion of the load, successful or otherwise.
+        The main function responsible for the loading of the JSON.
+     
+        - Parameter completion:  A handler called upon completion of the load, successful or otherwise.
      */
+    mutating func loadJSON(completion: RemoteResourceHandler?) {
+        load(JSONURL) { success in
+            //  processing the result is down to the adopter of this protocol
+            self.processJSON(success)
+            
+            //  call completion on main queue
+            NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: success) }
+        }
+    }
+}
+
+extension JSONResource {
+    /// This JSON resource as a JSON value. (JSON is lowercase here to avoid problems with it being mistaken for the type `JSONValue`)
+    var jsonValue: JSONValue? {
+        do {
+            if let data = dataForURL(JSONURL), result = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? JSONValue {
+                return result
+            }
+        } catch {
+            print("Error attempting to serialise JSON: \(error)")
+        }
+        
+        return nil
+    }
+}
+
+//	MARK: Unique
+
+/**
+    Defines a protocol for any entity which has a unique identifier.
+ */
+protocol Unique {
+    var identifier: String { get set }
+}
+
+extension Unique where Self: NSObject {
+    /**
+        A default initialiser for any unique object.
     
+        - Parameter id  A unique identifier for this object. Defaults to random unique string.
+    
+        - Returns: An instance os this Unique object.
+     */
+    init(id: String = NSUUID().UUIDString) {
+        self.init()
+        
+        identifier = id
+    }
+}
+
+/**
+    Compares 2 unique objects by checking the identifiers.
+ */
+func ==(left: Unique, right: Unique) -> Bool {
+    return left.identifier == right.identifier
+}
+
+extension NSObjectProtocol where Self: Unique {
+    func isEqual(object: AnyObject?) -> Bool {
+        if let object = object as? Unique {
+            return object.identifier == identifier
+        }
+        
+        return false
+    }
 }
