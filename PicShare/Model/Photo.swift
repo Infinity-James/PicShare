@@ -59,3 +59,17 @@ struct Photo {
         thumbnailURLString = photoThumbnailUrl
     }
 }
+
+//	MARK: StringRepresentable
+
+extension Photo: StringRepresentable {
+    var shortString: String {
+        let range = title.startIndex..<title.startIndex.advancedBy(10)
+        return title.substringWithRange(range)
+    }
+    var mediumString: String {
+        let range = title.startIndex..<title.startIndex.advancedBy(20)
+        return title.substringWithRange(range)
+    }
+    var longString: String { return title }
+}

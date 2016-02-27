@@ -179,6 +179,8 @@ struct User {
     }
 }
 
+//	MARK: StringRepresentable
+
 extension User: StringRepresentable {
     var shortString: String { return name }
     var mediumString: String { return name + " (" + email + ") - " + company.catchPhrase }
