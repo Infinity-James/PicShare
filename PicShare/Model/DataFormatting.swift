@@ -6,7 +6,7 @@
 //  Copyright © 2016 &Beyond. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 //	MARK: String Representable
 
@@ -27,4 +27,73 @@ protocol StringRepresentable {
 extension NSObjectProtocol where Self: StringRepresentable {
     /// Automatically implement description for objects that can be represented as strings.
     var description: String { return longString }
+}
+
+//	MARK: String Display
+
+/**
+    `StringDisplay`
+
+    A protocol to declare how best to display an item based on a given UI scenario.
+ */
+protocol StringDisplay {
+    /// The size of our container that we would display a string in.
+    var containerSize: CGSize { get }
+    /// The font for the string that we would display.
+    var containterFont: UIFont { get }
+    /**
+        When passed a string the asopter of this protocol should display the given string.
+     
+        - Parameter string:     The string to be displayed by the adopter of this protocol.
+     */
+    func assignString(string: String)
+}
+
+extension StringDisplay {
+    /**
+        Displays a string value given a string representable object.
+     
+        - Parameter object:     The object to be displayed as a string by us.
+     */
+    func displayStringValue(object: StringRepresentable) {
+        //  determine the longest string which can fit within our size
+        if stringWithin(object.longString) { assignString(object.longString) }
+        else if stringWithin(object.mediumString) { assignString(object.mediumString) }
+        else { assignString(object.shortString) }
+    }
+    
+    /**
+        Returns an ideal size based on the container size and string.
+     
+        - Parameter string:     The string to create a size for.
+     
+        - Returns:  The size for the given string and our container size.
+     */
+    func sizeWithString(string: String) -> CGSize {
+        let string = string as NSString
+        let maxSize = CGSize(width: containerSize.width, height: .max)
+        let attributes = [NSFontAttributeName: containterFont]
+        let frame = string.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, attributes: attributes, context: nil)
+        
+        return frame.size
+    }
+    
+    /**
+        Returns whether a given string can fit within our container size.
+     
+        - Returns:  `true` if the string can git within our container, `false` otherwise.
+     */
+    private func stringWithin(string: String) -> Bool {
+        let requiredHeight = sizeWithString(string).height
+        let allowedHeight = containerSize.height
+        return requiredHeight <= allowedHeight
+    }
+}
+
+extension UILabel: StringDisplay {
+    var containerSize: CGSize { return frame.size }
+    var containerFont: CGSize { return font }
+    func assignString(string: String) {
+        text = string
+    }
 }
