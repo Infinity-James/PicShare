@@ -97,3 +97,27 @@ extension UILabel: StringDisplay {
         text = string
     }
 }
+
+extension UITableViewCell: StringDisplay {
+    var containerSize: CGSize { return textLabel!.frame.size }
+    var containerFont: UIFont { return textLabel!.font }
+    func assignString(string: String) {
+        textLabel!.text = string
+    }
+}
+
+extension UIButton: StringDisplay {
+    var containerSize: CGSize { return frame.size }
+    var containerFont: UIFont { return titleLabel!.font }
+    func assignString(string: String) {
+        setTitle(string, forState: .Normal)
+    }
+}
+
+extension UIViewController: StringDisplay {
+    var containerSize: CGSize { return navigationController!.navigationBar.frame.size }
+    var containerFont: UIFont { return .systemFontOfSize(34.0) }
+    func assignString(string: String) {
+        title = string
+    }
+}
