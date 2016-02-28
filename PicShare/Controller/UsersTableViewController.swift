@@ -19,16 +19,33 @@ class UsersTableViewController: UITableViewController {
 
     //	MARK: Properties
     
-    /// Create the object which will be used to load the users.
-    let users = Users()
+    /// Create the object which will be used to load the users. Needs to be variable by the nature of loading the users.
+    var users = Users()
+    
+    //	MARK: View Lifecycle
+    
+    override func viewDidLoad() {
+        users.loadJSON()
+    }
+}
+
+extension UsersTableViewController {
     
     //	MARK: UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 0
+        return 1
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCellWithIdentifier("", forIndexPath: indexPath) as? UserTableViewCell else {
+            fatalError("The wrong cell was dequeued for table view: \(tableView)")
+        }
+        
+        return cell
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return users.users.count
     }
 }
