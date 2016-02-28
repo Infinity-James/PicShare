@@ -27,6 +27,24 @@ class Users: JSONResource {
     //	MARK: JSONResource Functions
     
     func processJSON(data: NSData) -> Bool {
-        return false
+        
+        var JSON = [JSONValue]()
+        
+        do {
+            JSON = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [JSONValue] ?? []
+        } catch {
+            print("Error parsing data into JSON: \(data)")
+            return false
+        }
+        
+        for userDictionary in JSON {
+            guard let user = User(JSON: userDictionary) else {
+                continue
+            }
+            
+            users.append(user)
+        }
+        
+        return true
     }
 }

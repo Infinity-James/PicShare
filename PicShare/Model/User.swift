@@ -88,7 +88,7 @@ struct User {
             /// The key to get the not boring name of the company.
             case Name = "name"
             /// The key to get the catchy one liner that sums a company up perfectly. Right?
-            case CatchPhrase = "catchphrase"
+            case CatchPhrase = "catchPhrase"
             /// Arguably the most import part of the company.
             case Bull = "bs"
         }

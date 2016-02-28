@@ -25,7 +25,9 @@ class UsersTableViewController: UITableViewController {
     //	MARK: View Lifecycle
     
     override func viewDidLoad() {
-        users.loadJSON()
+        users.loadJSON { success in
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -41,6 +43,9 @@ extension UsersTableViewController {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(String(UserTableViewCell), forIndexPath: indexPath) as? UserTableViewCell else {
             fatalError("The correct cell was not dequeued for table view: \(tableView)")
         }
+        
+        let user = users.users[indexPath.row]
+        cell.displayStringValue(user)
         
         return cell
     }

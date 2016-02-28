@@ -18,8 +18,6 @@ import Foundation
 protocol RemoteResource {
 }
 
-/// A closure which will be called when a remote resource has loaded it's data.
-typealias RemoteResourceHandler = (data: NSData?, success: Bool) -> ()
 /// A dictionary representing JSON.
 typealias JSONValue = [String: AnyObject]
 
@@ -30,7 +28,7 @@ extension RemoteResource {
         - Parameter URLPath:    The path at which the data defined by this remote resource resides.
         - Parameter completion: A closure which will be executed upon completion the load (successful or otherwise).
      */
-    mutating func load(URLPath: String, completion: RemoteResourceHandler?) {
+    mutating func load(URLPath: String, completion: ((data: NSData?, success: Bool) -> ())?) {
         guard let URL = NSURL(string: URLPath) else { fatalError("Invalid URL for resource: \(URLPath)") }
         
         let session = NSURLSession.sharedSession()
@@ -86,11 +84,14 @@ extension JSONResource {
     /**
         The main function responsible for the loading of the JSON.
      */
-    mutating func loadJSON() {
+    mutating func loadJSON(completion: ((success: Bool) -> ())?) {
         load(JSONURL) { data, success in
             //  processing the result is down to the adopter of this protocol
             if let data = data where success {
-                self.processJSON(data)
+                let success = self.processJSON(data)
+                NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: success) }
+            } else {
+                NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: false) }
             }
         }
     }
