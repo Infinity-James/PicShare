@@ -38,8 +38,8 @@ extension UsersTableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier("", forIndexPath: indexPath) as? UserTableViewCell else {
-            fatalError("The wrong cell was dequeued for table view: \(tableView)")
+        guard let cell = tableView.dequeueReusableCellWithIdentifier(String(UserTableViewCell), forIndexPath: indexPath) as? UserTableViewCell else {
+            fatalError("The correct cell was not dequeued for table view: \(tableView)")
         }
         
         return cell
