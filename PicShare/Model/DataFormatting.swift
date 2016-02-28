@@ -40,7 +40,7 @@ protocol StringDisplay {
     /// The size of our container that we would display a string in.
     var containerSize: CGSize { get }
     /// The font for the string that we would display.
-    var containterFont: UIFont { get }
+    var containerFont: UIFont { get }
     /**
         When passed a string the asopter of this protocol should display the given string.
      
@@ -72,7 +72,7 @@ extension StringDisplay {
     func sizeWithString(string: String) -> CGSize {
         let string = string as NSString
         let maxSize = CGSize(width: containerSize.width, height: .max)
-        let attributes = [NSFontAttributeName: containterFont]
+        let attributes = [NSFontAttributeName: containerFont]
         let frame = string.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, attributes: attributes, context: nil)
         
         return frame.size
@@ -92,7 +92,7 @@ extension StringDisplay {
 
 extension UILabel: StringDisplay {
     var containerSize: CGSize { return frame.size }
-    var containerFont: CGSize { return font }
+    var containerFont: UIFont { return font }
     func assignString(string: String) {
         text = string
     }
