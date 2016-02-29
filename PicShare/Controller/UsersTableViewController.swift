@@ -20,12 +20,13 @@ class UsersTableViewController: UITableViewController {
     //	MARK: Properties
     
     /// Create the object which will be used to load the users. Needs to be variable by the nature of loading the users.
-    var users = Users()
+    var users = [User]()
     
     //	MARK: View Lifecycle
     
     override func viewDidLoad() {
-        users.loadJSON { success in
+        PicShareResource<User>.allUsers() { users in
+            self.users = users
             self.tableView.reloadData()
         }
     }
@@ -44,13 +45,13 @@ extension UsersTableViewController {
             fatalError("The correct cell was not dequeued for table view: \(tableView)")
         }
         
-        let user = users.users[indexPath.row]
+        let user = users[indexPath.row]
         cell.displayStringValue(user)
         
         return cell
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.users.count
+        return users.count
     }
 }

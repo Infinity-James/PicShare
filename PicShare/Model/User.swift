@@ -16,7 +16,7 @@ import Foundation
 
     Object that represents a user.
  */
-struct User {
+struct User: JSONInitializable {
     
     //	MARK: Address
     

@@ -15,7 +15,7 @@ import Foundation
 
     An album of photos.
  */
-struct PhotoAlbum {
+struct PhotoAlbum: JSONInitializable {
     //	MARK: Properties
     
     /// The unique identifier for this album.

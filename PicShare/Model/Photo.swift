@@ -15,7 +15,7 @@ import Foundation
 
     Represents a photo.
  */
-struct Photo {
+struct Photo: JSONInitializable {
     //	MARK: Properties
     
     /// The unique identifier for the album that holds this photo.

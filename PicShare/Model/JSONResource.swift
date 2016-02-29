@@ -99,3 +99,82 @@ extension JSONResource {
 
 /// A string that uniquely identifies an object.
 typealias Identifier = Int
+
+protocol JSONInitializable {
+    init?(JSON: JSONValue)
+}
+
+//	MARK: PicShare Resource
+
+/**
+    `PicShareResource`
+
+    A generic class that can be used to load certain PicShare objects.
+    When given a JSON path the PicShare objects can be loaded from it.
+*/
+class PicShareResource<T: JSONInitializable>: JSONResource {
+    
+    //	MARK: Properties
+    
+    let JSONPath: String
+    /// The array of objects loaded from the given path.
+    var resourceObjects = [T]()
+    
+    /**
+        Initializes a PicShareResource with the path to load the resources from.
+     
+        - Parameter JSONPath:   The path at which the resource resides.
+     
+        - Returns:  An initialized PicShareResource object.
+     */
+    init(JSONPath: String) {
+        self.JSONPath = JSONPath
+    }
+    
+    //	MARK: JSONResource Functions
+    
+    func processJSON(data: NSData) -> Bool {
+        
+        var JSON = [JSONValue]()
+        
+        do {
+            JSON = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [JSONValue] ?? []
+        } catch {
+            print("Error parsing data into JSON: \(data)")
+            return false
+        }
+        
+        for userDictionary in JSON {
+            guard let object = T(JSON: userDictionary) else {
+                continue
+            }
+            
+            resourceObjects.append(object)
+        }
+        
+        return true
+    }
+}
+
+//	MARK: Pic Share Resources
+
+extension PicShareResource {
+    static func allUsers(completion: [User] -> ()) {
+        var resource = PicShareResource<User>(JSONPath: "users/")
+        resource.loadJSON { success in
+            completion(resource.resourceObjects)
+        }
+    }
+    static func allPhotoAlbums(completion: [PhotoAlbum] -> ()) {
+        var resource = PicShareResource<PhotoAlbum>(JSONPath: "albums/")
+        resource.loadJSON { success in
+            completion(resource.resourceObjects)
+        }
+    }
+    static func allPhotos(completion: [Photo] -> ()) {
+        var resource = PicShareResource<Photo>(JSONPath: "albums/")
+        resource.loadJSON { success in
+            completion(resource.resourceObjects)
+        }
+    }
+}
