@@ -69,7 +69,7 @@ class ImageFetchOperation: NSOperation {
 /**
     An object capable of caching data.
  */
-private struct DataCache {
+struct DataCache {
     
     //	10Mb is max size of cache
     private static let maxCacheSize = 10485760

@@ -22,6 +22,7 @@ protocol RemoteResource {
 typealias JSONValue = [String: AnyObject]
 
 extension RemoteResource {
+    
     /**
         Loads the data defined by this resource.
      
@@ -85,15 +86,39 @@ extension JSONResource {
         The main function responsible for the loading of the JSON.
      */
     mutating func loadJSON(completion: ((success: Bool) -> ())?) {
-        load(JSONURL) { data, success in
-            //  processing the result is down to the adopter of this protocol
-            if let data = data where success {
-                let success = self.processJSON(data)
-                NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: success) }
-            } else {
-                NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: false) }
+        
+        if let data = DataCache.dataForKey(resourceFileName) {
+            processJSON(data)
+            NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: true) }
+        } else {
+        
+            load(JSONURL) { data, success in
+                //  processing the result is down to the adopter of this protocol
+                if let data = data where success {
+                    DataCache.storeData(data, forKey: self.resourceFileName)
+                    let success = self.processJSON(data)
+                    NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: success) }
+                } else {
+                    NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: false) }
+                }
             }
         }
+    }
+    
+    private var resourceFileName: String {
+        //  the file name will firstly consist of the URL but in a safe way
+        let safeURL = JSONURL.stringByReplacingOccurrencesOfString("/", withString: "")
+        
+        //  to that we will add the most recent hour
+        //  this is so that we refresh the resource every hour because otherwise the JSON on the server could have changed
+        //  and our JSON would be stale
+        let now = NSDate()
+        let hourComponent = NSCalendar.currentCalendar().components(.Hour, fromDate: now).hour
+        let date = NSCalendar.currentCalendar().dateBySettingHour(hourComponent, minute: 0, second: 0, ofDate: now, options: .MatchNextTime)!
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MMddyyHH"
+        let fileName = safeURL + dateFormatter.stringFromDate(date)
+        return fileName
     }
 }
 
@@ -161,6 +186,7 @@ class PicShareResource<T: JSONInitializable>: JSONResource {
 extension PicShareResource {
     static func allUsers(completion: [User] -> ()) {
         var resource = PicShareResource<User>(JSONPath: "users/")
+        
         resource.loadJSON { success in
             completion(resource.resourceObjects)
         }
