@@ -19,6 +19,11 @@ class UsersTableViewController: UITableViewController {
 
     //	MARK: Properties
     
+    private let searchController: UISearchController = {
+        let searchController = UISearchController()
+        
+        return searchController
+    }()
     /// Create the object which will be used to load the users. Needs to be variable by the nature of loading the users.
     var users = [User]()
     
@@ -43,6 +48,9 @@ class UsersTableViewController: UITableViewController {
     //	MARK: View Lifecycle
     
     override func viewDidLoad() {
+        
+        tableView.accessibilityIdentifier = "Users"
+        
         PicShareResource<User>.allUsers() { users in
             self.users = users
             self.tableView.reloadData()
@@ -50,9 +58,9 @@ class UsersTableViewController: UITableViewController {
     }
 }
 
+//	MARK: UITableViewDataSource
+
 extension UsersTableViewController {
-    
-    //	MARK: UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -73,5 +81,13 @@ extension UsersTableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
+    }
+}
+
+//	MARK: UISearchResultsUpdating
+
+extension UsersTableViewController: UISearchResultsUpdating {
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        
     }
 }

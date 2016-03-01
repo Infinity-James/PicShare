@@ -97,6 +97,8 @@ class UserDetailViewController: UIViewController {
         if let user = user {
             updateUIWithUser(user)
         }
+        
+        tableView.accessibilityIdentifier = "Photo Albums"
     }
 }
 

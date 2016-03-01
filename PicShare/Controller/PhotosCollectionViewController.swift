@@ -112,5 +112,7 @@ class PhotosCollectionViewController: UICollectionViewController {
         if let photoAlbum = photoAlbum {
             updateUIWithPhotoAlbum(photoAlbum)
         }
+        
+        collectionView!.accessibilityIdentifier = "Photos"
     }
 }
