@@ -1,0 +1,30 @@
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "1Iw-Yt-Uox"; */
+"1Iw-Yt-Uox.text" = "Label";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "1ye-xc-w6V"; */
+"1ye-xc-w6V.text" = "Email";
+
+/* Class = "UINavigationItem"; title = "Users"; ObjectID = "Gfv-ql-2V4"; */
+"Gfv-ql-2V4.title" = "Utilisateurs";
+
+/* Class = "UILabel"; text = "Username"; ObjectID = "JrE-tM-EIQ"; */
+"JrE-tM-EIQ.text" = "Username";
+
+/* Class = "UILabel"; text = "Company"; ObjectID = "LsP-y7-PhW"; */
+"LsP-y7-PhW.text" = "Company";
+
+/* Class = "UILabel"; text = "Full Name"; ObjectID = "T3Z-Uj-FYe"; */
+"T3Z-Uj-FYe.text" = "Full Name";
+
+/* Class = "UILabel"; text = "Company BS"; ObjectID = "a96-PI-Vs5"; */
+"a96-PI-Vs5.text" = "Company BS";
+
+/* Class = "UILabel"; text = "Website"; ObjectID = "lGy-kk-F7x"; */
+"lGy-kk-F7x.text" = "Website";
+
+/* Class = "UILabel"; text = "User's Name"; ObjectID = "msZ-5G-PEC"; */
+"msZ-5G-PEC.text" = "User's Name";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "rFA-V3-vSY"; */
+"rFA-V3-vSY.text" = "Label";
