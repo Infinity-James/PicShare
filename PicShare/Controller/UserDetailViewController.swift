@@ -51,7 +51,7 @@ class UserDetailViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         guard let segueIdentifier = segue.identifier else {
-            fatalError("There is an unexpected segue without an identifier in UsersTableViewController: \(segue).")
+            fatalError("There is an unexpected segue without an identifier in UserDetailViewController: \(segue).")
         }
         
         switch segueIdentifier {

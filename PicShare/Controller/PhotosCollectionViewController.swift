@@ -8,7 +8,14 @@
 
 import UIKit
 
+//	MARK: Photos Collection View Controller
 
+/**
+    `PhotosCollectionViewController`
+
+    A view controller that displays the photos in an album.
+    The user can select a photo to see it larger.
+ */
 class PhotosCollectionViewController: UICollectionViewController {
 
     
@@ -23,11 +30,31 @@ class PhotosCollectionViewController: UICollectionViewController {
     
     private var photos = [Photo]()
     
+    /// The album containing the photos to be displayed.
     var photoAlbum: PhotoAlbum? {
         didSet {
             guard let photoAlbum = photoAlbum where isViewLoaded() else { return }
             
             updateUIWithPhotoAlbum(photoAlbum)
+        }
+    }
+    
+    //	MARK: Segues
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        guard let segueIdentifier = segue.identifier else {
+            fatalError("There is an unexpected segue without an identifier in PhotosCollectionViewController: \(segue).")
+        }
+        
+        switch segueIdentifier {
+        case String(PhotoViewController):
+            guard let photoVC = segue.destinationViewController as? PhotoViewController else { fatalError("Incorrect view controller for the segue \"\(String(PhotoViewController))\".") }
+            let selectedPhoto = photos[collectionView!.indexPathsForSelectedItems()!.first!.row]
+            photoVC.photo = selectedPhoto
+            
+        default:
+            fatalError("There is an unexpected segue with the identifier \"\(segueIdentifier)\" in PhotosCollectionViewController.")
         }
     }
     

@@ -244,10 +244,10 @@
             </objects>
             <point key="canvasLocation" x="3041" y="526"/>
         </scene>
-        <!--View Controller-->
+        <!--Photo View Controller-->
         <scene sceneID="jbh-U2-aJc">
             <objects>
-                <viewController id="AUr-Sv-2gE" sceneMemberID="viewController">
+                <viewController id="AUr-Sv-2gE" customClass="PhotoViewController" customModule="PicShare" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gPj-ef-0bR"/>
                         <viewControllerLayoutGuide type="bottom" id="QlM-TG-BSI"/>
@@ -268,6 +268,9 @@
                             <constraint firstItem="QlM-TG-BSI" firstAttribute="top" secondItem="fNG-7M-dBS" secondAttribute="bottom" id="Zj7-Xf-pZa"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="photoImageView" destination="fNG-7M-dBS" id="7hm-D1-i1a"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HeW-JD-Cdj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
