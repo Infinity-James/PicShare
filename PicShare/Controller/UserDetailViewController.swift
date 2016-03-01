@@ -19,13 +19,17 @@ class UserDetailViewController: UIViewController {
     
     //	MARK: Properties - State
     
-    var user: User {
+    var user: User? {
         didSet {
+            guard let user = user else { return }
+            
+            //  update the UI with the new user details
             nameLabel.text = user.name
             usernameLabel.text = user.username
             companyLabel.text = user.company.name
             companyBSLabel.text = user.company.bull
-            emailLabel.text = user
+            emailLabel.text = user.email
+            websiteLabel.text = user.website
         }
     }
     
