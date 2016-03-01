@@ -119,8 +119,9 @@ struct DataCache {
     }
     
     static func storeData(data: NSData, forKey key: String) {
+        let URL = URLForDataWithKey(key)
         //  write data to file system
-        data.writeToURL(URLForDataWithKey(key), atomically: true)
+        data.writeToURL(URL, atomically: true)
         
         //  make sure cache is not too big
         let dispatchQueue = dispatch_queue_create("trimCache", nil);
@@ -131,7 +132,7 @@ struct DataCache {
     }
     
     private static func URLForDataWithKey(key: String) -> NSURL {
-        return NSURL(string: key, relativeToURL: cacheURL)!
+        return cacheURL.URLByAppendingPathComponent(key)
     }
 }
 

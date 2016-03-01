@@ -87,6 +87,8 @@ extension JSONResource {
      */
     mutating func loadJSON(completion: ((success: Bool) -> ())?) {
         
+        print("FILE NAME: \(resourceFileName)")
+        
         if let data = DataCache.dataForKey(resourceFileName) {
             processJSON(data)
             NSOperationQueue.mainQueue().addOperationWithBlock { completion?(success: true) }
