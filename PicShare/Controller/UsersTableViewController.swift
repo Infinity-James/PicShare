@@ -22,6 +22,24 @@ class UsersTableViewController: UITableViewController {
     /// Create the object which will be used to load the users. Needs to be variable by the nature of loading the users.
     var users = [User]()
     
+    //	MARK: Segues
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        guard let segueIdentifier = segue.identifier else {
+            fatalError("There is an unexpected segue without an identifier in UsersTableViewController: \(segue).")
+        }
+        
+        switch segueIdentifier {
+        case String(UserDetailViewController):
+            guard let userDetailVC = segue.destinationViewController as? UserDetailViewController else { fatalError("Incorrect view controller for the segue \"\(String(UserDetailViewController))\".") }
+            let selectedUser = users[tableView.indexPathForSelectedRow!.row]
+            userDetailVC.user = selectedUser
+        default:
+            fatalError("There is an unexpected segue with the identifier \"\(segueIdentifier)\" in UsersTableViewController.")
+        }
+    }
+    
     //	MARK: View Lifecycle
     
     override func viewDidLoad() {
@@ -46,7 +64,9 @@ extension UsersTableViewController {
         }
         
         let user = users[indexPath.row]
-        cell.displayStringValue(user)
+        cell.nameLabel.text = user.name
+        cell.emailLabel.text = user.email
+        cell.catchPhraseLabel.text = user.company.catchPhrase
         
         return cell
     }
