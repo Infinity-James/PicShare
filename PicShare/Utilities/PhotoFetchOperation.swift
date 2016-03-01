@@ -38,7 +38,7 @@ class ImageFetchOperation: NSOperation {
     
     override func main() {
         
-        guard let data = NSData(contentsOfURL: imageURL),
+        guard let data = DataCache.dataForKey(imageURL.lastPathComponent!) ?? NSData(contentsOfURL: imageURL),
             image = UIImage(data: data) else {
             cancel()
             return
@@ -48,7 +48,12 @@ class ImageFetchOperation: NSOperation {
     }
 }
 
-private struct ImageCache {
+//	MARK: Data Cache
+
+/**
+    An object capable of caching data.
+ */
+private struct DataCache {
     
     //	10Mb is max size of cache
     private static let maxCacheSize = 10485760
@@ -60,7 +65,12 @@ private struct ImageCache {
         return cachesDirectories.last!
     }()
     
-    static func trimCache() {
+    //	MARK: Cache Management
+    
+    /**
+        Trims the cache if necessary.
+     */
+    static private func trimCache() {
         
         //  get all of the files in the cache
         let URLsInCache = try! NSFileManager.defaultManager().contentsOfDirectoryAtURL(cacheURL, includingPropertiesForKeys: [NSFileType, NSFileSize, NSURLCreationDateKey], options: .SkipsHiddenFiles)
@@ -83,6 +93,29 @@ private struct ImageCache {
                 try! NSFileManager.defaultManager().removeItemAtURL(URL)
             }
         }
+    }
+    
+    //	MARK: Data Management
+    
+    static func dataForKey(key: String) -> NSData? {
+        let URL = URLForDataWithKey(key)
+        return NSData(contentsOfURL: URL)
+    }
+    
+    static func storeData(data: NSData, forKey key: String) {
+        //  write data to file system
+        data.writeToURL(URLForDataWithKey(key), atomically: true)
+        
+        //  make sure cache is not too big
+        let dispatchQueue = dispatch_queue_create("trimCache", nil);
+        
+        dispatch_async(dispatchQueue) {
+            trimCache()
+        }
+    }
+    
+    private static func URLForDataWithKey(key: String) -> NSURL {
+        return NSURL(string: key, relativeToURL: cacheURL)!
     }
 }
 
