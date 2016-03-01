@@ -172,9 +172,45 @@ extension PicShareResource {
         }
     }
     static func allPhotos(completion: [Photo] -> ()) {
-        var resource = PicShareResource<Photo>(JSONPath: "albums/")
+        var resource = PicShareResource<Photo>(JSONPath: "photos/")
         resource.loadJSON { success in
             completion(resource.resourceObjects)
+        }
+    }
+}
+
+
+extension PicShareResource {
+    
+    /**
+        Fetches the photo albums associated with a given user.
+     
+        - Parameter user:           The user for which we fetch the photo albums.
+        - Parameter completion:     Called with the fetched photo albums.
+     */
+    static func photoAlbumsForUser(user: User, completion: ([PhotoAlbum]) -> ()) {
+        allPhotoAlbums { albums in
+            let userAlbums = albums.filter { album in
+                album.userIdentifier == user.identifier
+            }
+            
+            completion(userAlbums)
+        }
+    }
+    
+    /**
+        Fetches the photo albums associated with a given user.
+     
+        - Parameter album:         The photo albums containing the photos to be fetched.
+        - Parameter completion:    Called with the fetched photos.
+     */
+    static func photosInAlbum(album: PhotoAlbum, completion: ([Photo]) -> ()) {
+        allPhotos { photos in
+            let albumPhotos = photos.filter { photo in
+                photo.albumIdentifier == album.identifier
+            }
+            
+            completion(albumPhotos)
         }
     }
 }

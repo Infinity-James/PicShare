@@ -46,12 +46,19 @@ struct PhotoAlbum: JSONInitializable {
 
 extension PhotoAlbum: StringRepresentable {
     var shortString: String {
-        let range = title.startIndex..<title.startIndex.advancedBy(10)
-        return title.substringWithRange(range)
+        return string(title, limitedTo: 40)
     }
     var mediumString: String {
-        let range = title.startIndex..<title.startIndex.advancedBy(20)
-        return title.substringWithRange(range)
+        return string(title, limitedTo: 50)
     }
     var longString: String { return title }
+    
+    func string(string: String, limitedTo limit: Int) -> String {
+        if title.startIndex.distanceTo(title.endIndex) > limit {
+            let range = title.startIndex..<title.startIndex.advancedBy(limit)
+            return title.substringWithRange(range)
+        } else {
+            return string
+        }
+    }
 }
