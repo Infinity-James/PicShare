@@ -38,10 +38,26 @@ class ImageFetchOperation: NSOperation {
     
     override func main() {
         
-        guard let data = DataCache.dataForKey(imageURL.lastPathComponent!) ?? NSData(contentsOfURL: imageURL),
-            image = UIImage(data: data) else {
+        var fetchedFromCache = false
+        
+        
+        let data: NSData?
+        
+        if let cachedData = DataCache.dataForKey(imageURL.lastPathComponent!) {
+            data = cachedData
+            fetchedFromCache = true
+        } else {
+            data = NSData(contentsOfURL: imageURL)
+        }
+        
+        guard let imageData = data,
+            image = UIImage(data: imageData) else {
             cancel()
             return
+        }
+        
+        if !fetchedFromCache {
+            DataCache.storeData(imageData, forKey: imageURL.lastPathComponent!)
         }
         
         self.image = image
@@ -73,11 +89,11 @@ private struct DataCache {
     static private func trimCache() {
         
         //  get all of the files in the cache
-        let URLsInCache = try! NSFileManager.defaultManager().contentsOfDirectoryAtURL(cacheURL, includingPropertiesForKeys: [NSFileType, NSFileSize, NSURLCreationDateKey], options: .SkipsHiddenFiles)
+        let URLsInCache = try! NSFileManager.defaultManager().contentsOfDirectoryAtURL(cacheURL, includingPropertiesForKeys: [], options: .SkipsHiddenFiles)
         var cacheSize = 0
-        URLsInCache.forEach { cacheSize += $0.fileSize! }
+        URLsInCache.forEach { cacheSize += $0.fileSize ?? 0 }
 
-        print("Cache Size: \(cacheSize / 1000)Mb")
+//        print("Cache Size: \(cacheSize / 1000)Mb")
         
         //  if the cache is still small enough we can exit early
         guard cacheSize < maxCacheSize else { return }
@@ -122,21 +138,48 @@ private struct DataCache {
 //	MARK: NSURL - Convenience Attributes
 
 extension NSURL {
+    
+    var attributes: [String: AnyObject]? {
+        let attributes: [String: AnyObject]?
+        do {
+            attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(absoluteString)
+        } catch {
+            attributes = nil
+        }
+        
+        return attributes
+    }
+    
     var fileSize: Int? {
         var fileSize: AnyObject?
         try! getResourceValue(&fileSize, forKey: NSFileSize)
+        
+        if fileSize == nil {
+            fileSize = attributes?[NSFileSize]
+        }
+        
         return fileSize as? Int
     }
     
     var creationDate: NSDate? {
         var creationDate: AnyObject?
         try! getResourceValue(&creationDate, forKey: NSURLCreationDateKey)
+        
+        if creationDate == nil {
+            creationDate = attributes?[NSURLCreationDateKey]
+        }
+        
         return creationDate as? NSDate
     }
     
     var fileType: String? {
         var fileType: AnyObject?
         try! getResourceValue(&fileType, forKey: NSFileType)
+        
+        if fileType == nil {
+            fileType = attributes?[NSFileType]
+        }
+        
         return fileType as? String
     }
 }

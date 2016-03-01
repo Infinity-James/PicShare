@@ -92,14 +92,11 @@ class PhotosCollectionViewController: UICollectionViewController {
         let photo = photos[indexPath.item]
         guard let thumbnailURL = photo.thumbnailURL else { return cell }
         
-        photoFetchQueue.addOperationWithBlock {
-            guard let data = NSData(contentsOfURL: thumbnailURL) else { return }
-            
-            let image = UIImage(data: data)
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                cell.photoThumbnail = image
-            }
+        let imageOperation = ImageFetchOperation(imageURL: thumbnailURL)
+        imageOperation.completionBlock = {
+            NSOperationQueue.mainQueue().addOperationWithBlock { cell.photoThumbnail = imageOperation.image }
         }
+        photoFetchQueue.addOperation(imageOperation)
         
         return cell
     }
