@@ -71,10 +71,10 @@ class ImageFetchOperation: NSOperation {
  */
 struct DataCache {
     
-    //	10Mb is max size of cache
-    private static let maxCacheSize = 10485760
-    //	10Mb is the size of the cache at which we stop trimming
-    private static let trimCacheSize = 5242880
+    //	50Mb is max size of cache
+    private static let maxCacheSize = 52428800
+    //	30Mb is the size of the cache at which we stop trimming
+    private static let trimCacheSize = 31457280
     
     private static let cacheURL: NSURL = {
         let cachesDirectories = NSFileManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask)
