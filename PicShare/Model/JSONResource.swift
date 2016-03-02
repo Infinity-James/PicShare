@@ -114,12 +114,9 @@ extension JSONResource {
         //  to that we will add the most recent hour
         //  this is so that we refresh the resource every hour because otherwise the JSON on the server could have changed
         //  and our JSON would be stale
-        let now = NSDate()
-        let hourComponent = NSCalendar.currentCalendar().components(.Hour, fromDate: now).hour
-        let date = NSCalendar.currentCalendar().dateBySettingHour(hourComponent, minute: 0, second: 0, ofDate: now, options: .MatchNextTime)!
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMddyyHH"
-        let fileName = safeURL + dateFormatter.stringFromDate(date)
+        let fileName = safeURL + dateFormatter.stringFromDate(NSDate())
         return fileName
     }
 }

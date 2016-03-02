@@ -121,7 +121,7 @@ struct DataCache {
     static func storeData(data: NSData, forKey key: String) {
         let URL = URLForDataWithKey(key)
         //  write data to file system
-        data.writeToURL(URL, atomically: true)
+        data.writeToURL(URL, atomically: false)
         
         //  make sure cache is not too big
         let dispatchQueue = dispatch_queue_create("trimCache", nil);
@@ -143,8 +143,9 @@ extension NSURL {
     var attributes: [String: AnyObject]? {
         let attributes: [String: AnyObject]?
         do {
-            attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(absoluteString)
+            attributes = try NSFileManager.defaultManager().attributesOfItemAtPath(path!)
         } catch {
+            print("Error trying to read attributes for URL.\nURL: \(self.absoluteString)\nError: \(error)")
             attributes = nil
         }
         
